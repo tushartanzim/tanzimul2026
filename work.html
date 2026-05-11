@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <script>
-    // ── Apply saved theme immediately (before paint) ──────────
-    (function(){
-      var t = localStorage.getItem('tanzim-theme') || 'light';
-      document.documentElement.setAttribute('data-theme', t);
-    })();
+  // ── Apply saved theme immediately (before paint) ──────────
+  (function () {
+    var t = localStorage.getItem('tanzim-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
 </script>
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,124 +15,642 @@
   <link rel="icon" href="image/Tanzim%20Logo.png" type="image/png" sizes="32x32" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet" />
   <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --ink: #1a1a2e; --ink-soft: #2d2d4e;
-      --gold: #c9a96e; --gold-light: #e8c99a;
-      --cream: #faf8f4; --mist: #f0ece4;
-      --sage: #8a9e8b; --slate: #6b7a8d;
-      --white: #ffffff; --shadow: 0 20px 60px rgba(26,26,46,0.1);
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--ink); overflow-x: hidden; cursor: none; }
-    .cursor { position: fixed; width: 10px; height: 10px; background: var(--gold); border-radius: 50%; pointer-events: none; z-index: 9999; mix-blend-mode: multiply; }
-    .cursor-ring { position: fixed; width: 36px; height: 36px; border: 1.5px solid var(--gold); border-radius: 50%; pointer-events: none; z-index: 9998; transition: all 0.35s cubic-bezier(.23,1,.32,1); opacity: 0.6; }
 
-    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 28px 60px; background: rgba(250,248,244,0.88); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(201,169,110,0.15); }
-    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; color: var(--ink); text-decoration: none; }
-    .nav-logo span { color: var(--gold); }
-    .nav-links { display: flex; gap: 48px; list-style: none; }
-    .nav-links a { font-size: 0.82rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--slate); text-decoration: none; position: relative; transition: color 0.3s; }
-    .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--gold); transition: width 0.4s cubic-bezier(.23,1,.32,1); }
-    .nav-links a:hover { color: var(--ink); }
-    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
-    .nav-links a.active { color: var(--ink); }
-    .nav-cta { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); text-decoration: none; border: 1px solid var(--gold); padding: 10px 24px; border-radius: 40px; transition: all 0.3s; }
-    .nav-cta:hover { background: var(--gold); color: var(--white); }
+    :root {
+      --ink: #1a1a2e;
+      --ink-soft: #2d2d4e;
+      --gold: #c9a96e;
+      --gold-light: #e8c99a;
+      --cream: #faf8f4;
+      --mist: #f0ece4;
+      --sage: #8a9e8b;
+      --slate: #6b7a8d;
+      --white: #ffffff;
+      --shadow: 0 20px 60px rgba(26, 26, 46, 0.1);
+    }
 
-    .nav-toggle { display: none; background: none; border: none; cursor: none; padding: 0; flex-direction: column; gap: 4px; }
-    .nav-toggle span { width: 24px; height: 2px; background: var(--ink); transition: all 0.3s; }
-    .nav-toggle.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
-    .nav-toggle.open span:nth-child(2) { opacity: 0; }
-    .nav-toggle.open span:nth-child(3) { transform: rotate(-45deg) translate(7px, -6px); }
+    html {
+      scroll-behavior: smooth;
+    }
 
-    .mobile-menu { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(250,248,244,0.95); backdrop-filter: blur(20px); z-index: 99; flex-direction: column; justify-content: center; align-items: center; gap: 40px; }
-    .mobile-menu.active { display: flex; }
-    .mobile-nav-links { list-style: none; text-align: center; }
-    .mobile-nav-links a { font-size: 1.2rem; color: var(--ink); text-decoration: none; display: block; padding: 10px 0; transition: color 0.3s; }
-    .mobile-nav-links a:hover { color: var(--gold); }
-    .mobile-nav-cta { font-size: 0.9rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); text-decoration: none; border: 1px solid var(--gold); padding: 12px 28px; border-radius: 40px; transition: all 0.3s; }
-    .mobile-nav-cta:hover { background: var(--gold); color: var(--white); }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    .cursor {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: multiply;
+    }
+
+    .cursor-ring {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transition: all 0.35s cubic-bezier(.23, 1, .32, 1);
+      opacity: 0.6;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 60px;
+      background: rgba(250, 248, 244, 0.88);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(201, 169, 110, 0.15);
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .nav-logo span {
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 48px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--slate);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.3s;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--gold);
+      transition: width 0.4s cubic-bezier(.23, 1, .32, 1);
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+    .nav-links a.active {
+      color: var(--ink);
+    }
+
+    .nav-cta {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      border: 1px solid var(--gold);
+      padding: 10px 24px;
+      border-radius: 40px;
+      transition: all 0.3s;
+    }
+
+    .nav-cta:hover {
+      background: var(--gold);
+      color: var(--white);
+    }
+
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: none;
+      padding: 0;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-toggle span {
+      width: 24px;
+      height: 2px;
+      background: var(--ink);
+      transition: all 0.3s;
+    }
+
+    .nav-toggle.open span:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .nav-toggle.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .nav-toggle.open span:nth-child(3) {
+      transform: rotate(-45deg) translate(7px, -6px);
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(250, 248, 244, 0.95);
+      backdrop-filter: blur(20px);
+      z-index: 99;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .mobile-menu.active {
+      display: flex;
+    }
+
+    .mobile-nav-links {
+      list-style: none;
+      text-align: center;
+    }
+
+    .mobile-nav-links a {
+      font-size: 1.2rem;
+      color: var(--ink);
+      text-decoration: none;
+      display: block;
+      padding: 10px 0;
+      transition: color 0.3s;
+    }
+
+    .mobile-nav-links a:hover {
+      color: var(--gold);
+    }
+
+    .mobile-nav-cta {
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      border: 1px solid var(--gold);
+      padding: 12px 28px;
+      border-radius: 40px;
+      transition: all 0.3s;
+    }
+
+    .mobile-nav-cta:hover {
+      background: var(--gold);
+      color: var(--white);
+    }
 
     /* PAGE HERO */
-    .page-hero { padding: 160px 80px 80px; position: relative; overflow: hidden; }
-    .page-hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 80% 30%, rgba(201,169,110,0.06) 0%, transparent 60%); }
-    .page-hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(201,169,110,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(201,169,110,0.04) 1px, transparent 1px); background-size: 60px 60px; }
-    .page-hero-content { position: relative; z-index: 1; max-width: 700px; }
-    .page-tag { font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; opacity: 0; animation: fadeUp 0.8s ease 0.5s forwards; }
-    .page-tag::before { content: ''; width: 28px; height: 1px; background: var(--gold); }
-    .page-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(3rem, 5vw, 4.5rem); font-weight: 300; line-height: 1.1; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 28px; opacity: 0; animation: fadeUp 0.9s ease 0.65s forwards; }
-    .page-title em { font-style: italic; color: var(--gold); }
-    .page-lead { font-size: 1rem; line-height: 1.85; color: var(--slate); font-weight: 300; max-width: 500px; opacity: 0; animation: fadeUp 0.9s ease 0.8s forwards; }
+    .page-hero {
+      padding: 160px 80px 80px;
+      position: relative;
+      overflow: hidden;
+    }
 
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .page-hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 80% 30%, rgba(201, 169, 110, 0.06) 0%, transparent 60%);
+    }
+
+    .page-hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(201, 169, 110, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(201, 169, 110, 0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .page-hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+    }
+
+    .page-tag {
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.5s forwards;
+    }
+
+    .page-tag::before {
+      content: '';
+      width: 28px;
+      height: 1px;
+      background: var(--gold);
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.65s forwards;
+    }
+
+    .page-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .page-lead {
+      font-size: 1rem;
+      line-height: 1.85;
+      color: var(--slate);
+      font-weight: 300;
+      max-width: 500px;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.8s forwards;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
     /* FILTER */
-    .filter-bar { padding: 0 80px; margin-bottom: 60px; display: flex; gap: 12px; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.8s ease 1s forwards; }
-    .filter-btn { font-size: 0.76rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; padding: 9px 22px; border-radius: 30px; border: 1px solid rgba(201,169,110,0.25); color: var(--slate); background: transparent; cursor: none; transition: all 0.3s; }
-    .filter-btn:hover { background: var(--ink); border-color: var(--ink); color: var(--white); }
-    .filter-btn.active { background: var(--gold); border-color: var(--gold); color: var(--white); }
+    .filter-bar {
+      padding: 0 80px;
+      margin-bottom: 60px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 1s forwards;
+    }
+
+    .filter-btn {
+      font-size: 0.76rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+      padding: 9px 22px;
+      border-radius: 30px;
+      border: 1px solid rgba(201, 169, 110, 0.25);
+      color: var(--slate);
+      background: transparent;
+      cursor: none;
+      transition: all 0.3s;
+    }
+
+    .filter-btn:hover {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--white);
+    }
+
+    .filter-btn.active {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: var(--white);
+    }
 
     /* PROJECTS GRID */
-    .projects-section { padding: 0 80px 100px; }
-    .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
+    .projects-section {
+      padding: 0 80px 100px;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 32px;
+    }
 
     .project-card {
-      background: var(--white); border-radius: 28px; overflow: hidden;
-      border: 1px solid rgba(201,169,110,0.1); box-shadow: var(--shadow);
-      transition: transform 0.5s cubic-bezier(.23,1,.32,1), box-shadow 0.5s;
-      opacity: 0; transform: translateY(40px);
+      background: var(--white);
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid rgba(201, 169, 110, 0.1);
+      box-shadow: var(--shadow);
+      transition: transform 0.5s cubic-bezier(.23, 1, .32, 1), box-shadow 0.5s;
+      opacity: 0;
+      transform: translateY(40px);
     }
-    .project-card.visible { opacity: 1; transform: translateY(0); }
-    .project-card:hover { transform: translateY(-12px); box-shadow: 0 44px 80px rgba(26,26,46,0.18); }
+
+    .project-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .project-card:hover {
+      transform: translateY(-12px);
+      box-shadow: 0 44px 80px rgba(26, 26, 46, 0.18);
+    }
 
     .project-thumb {
-      height: 260px; background: linear-gradient(135deg, var(--ink), var(--ink-soft));
-      position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+      height: 260px;
+      background: linear-gradient(135deg, var(--ink), var(--ink-soft));
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .project-card.featured .project-thumb { height: 340px; }
+
+    .project-card.featured .project-thumb {
+      height: 340px;
+    }
 
     .project-thumb-bg {
-      position: absolute; inset: 0;
-      background-image: linear-gradient(rgba(201,169,110,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(201,169,110,0.07) 1px, transparent 1px);
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(201, 169, 110, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(201, 169, 110, 0.07) 1px, transparent 1px);
       background-size: 28px 28px;
     }
-    .project-thumb-num { font-family: 'Cormorant Garamond', serif; font-size: 7rem; font-weight: 300; color: rgba(201,169,110,0.12); position: absolute; bottom: -16px; right: 24px; line-height: 1; }
-    .project-icon { width: 64px; height: 64px; border-radius: 50%; background: rgba(201,169,110,0.15); display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; }
 
-    .project-badges { position: absolute; top: 20px; left: 20px; display: flex; gap: 8px; z-index: 1; }
-    .project-badge { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; padding: 5px 12px; border-radius: 20px; background: rgba(26,26,46,0.85); color: var(--gold); border: 1px solid rgba(201,169,110,0.3); backdrop-filter: blur(4px); }
-    .project-badge.featured-badge { background: var(--gold); color: var(--white); border-color: var(--gold); }
+    .project-thumb-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 7rem;
+      font-weight: 300;
+      color: rgba(201, 169, 110, 0.12);
+      position: absolute;
+      bottom: -16px;
+      right: 24px;
+      line-height: 1;
+    }
 
-    .project-info { padding: 36px 36px 32px; }
-    .project-type { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); font-weight: 500; margin-bottom: 12px; }
-    .project-title { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 400; color: var(--ink); margin-bottom: 14px; line-height: 1.25; }
-    .project-desc { font-size: 0.88rem; line-height: 1.8; color: var(--slate); font-weight: 300; margin-bottom: 24px; }
-    .project-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
-    .project-tag-chip { font-size: 0.72rem; padding: 4px 12px; border-radius: 20px; border: 1px solid rgba(201,169,110,0.2); color: var(--slate); letter-spacing: 0.04em; }
-    .project-link { font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: gap 0.3s, color 0.3s; }
-    .project-link:hover { gap: 14px; color: var(--gold); }
+    .project-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(201, 169, 110, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .project-badges {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      gap: 8px;
+      z-index: 1;
+    }
+
+    .project-badge {
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 20px;
+      background: rgba(26, 26, 46, 0.85);
+      color: var(--gold);
+      border: 1px solid rgba(201, 169, 110, 0.3);
+      backdrop-filter: blur(4px);
+    }
+
+    .project-badge.featured-badge {
+      background: var(--gold);
+      color: var(--white);
+      border-color: var(--gold);
+    }
+
+    .project-info {
+      padding: 36px 36px 32px;
+    }
+
+    .project-type {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      font-weight: 500;
+      margin-bottom: 12px;
+    }
+
+    .project-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      font-weight: 400;
+      color: var(--ink);
+      margin-bottom: 14px;
+      line-height: 1.25;
+    }
+
+    .project-desc {
+      font-size: 0.88rem;
+      line-height: 1.8;
+      color: var(--slate);
+      font-weight: 300;
+      margin-bottom: 24px;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .project-tag-chip {
+      font-size: 0.72rem;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(201, 169, 110, 0.2);
+      color: var(--slate);
+      letter-spacing: 0.04em;
+    }
+
+    .project-link {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: gap 0.3s, color 0.3s;
+    }
+
+    .project-link:hover {
+      gap: 14px;
+      color: var(--gold);
+    }
 
     /* CTA */
-    .cta-section { background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%); padding: 80px; display: flex; align-items: center; justify-content: space-between; gap: 60px; }
-    .cta-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 300; color: var(--ink); line-height: 1.2; }
-    .cta-title em { font-style: italic; }
-    .cta-desc { font-size: 1rem; color: rgba(26,26,46,0.65); margin-top: 12px; font-weight: 300; }
-    .cta-actions { display: flex; gap: 20px; align-items: center; flex-shrink: 0; }
-    .btn-gold { background: var(--ink); color: var(--white); padding: 16px 36px; border-radius: 50px; font-size: 0.82rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; transition: all 0.3s; }
-    .btn-gold:hover { background: var(--ink-soft); transform: translateY(-2px); }
-    .btn-outline-white { border: 1.5px solid rgba(26,26,46,0.4); color: var(--ink); padding: 15px 32px; border-radius: 50px; font-size: 0.82rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; transition: all 0.3s; }
-    .btn-outline-white:hover { background: rgba(26,26,46,0.08); }
+    .cta-section {
+      background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15)), linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+      padding: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 60px;
+    }
 
-    footer { background: var(--ink); padding: 48px 80px; display: flex; align-items: center; justify-content: space-between; }
-    .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 600; color: var(--white); text-decoration: none; }
-    .footer-logo span { color: var(--gold); }
-    .footer-copy { font-size: 0.78rem; color: rgba(255,255,255,0.35); }
-    .footer-links { display: flex; gap: 32px; list-style: none; }
-    .footer-links a { font-size: 0.78rem; color: rgba(255,255,255,0.45); text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.3s; }
-    .footer-links a:hover { color: var(--gold); }
+    .cta-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 300;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+
+    .cta-title em {
+      font-style: italic;
+    }
+
+    .cta-desc {
+      font-size: 1rem;
+      color: rgba(26, 26, 46, 0.65);
+      margin-top: 12px;
+      font-weight: 300;
+    }
+
+    .cta-actions {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .btn-gold {
+      background: var(--ink);
+      color: var(--white);
+      padding: 16px 36px;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .btn-gold:hover {
+      background: var(--ink-soft);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline-white {
+      border: 1.5px solid rgba(26, 26, 46, 0.4);
+      color: var(--ink);
+      padding: 15px 32px;
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .btn-outline-white:hover {
+      background: rgba(26, 26, 46, 0.08);
+    }
+
+    footer {
+      background: var(--ink);
+      padding: 48px 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .footer-logo span {
+      color: var(--gold);
+    }
+
+    .footer-copy {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.35);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.45);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover {
+      color: var(--gold);
+    }
 
     /* CAROUSEL STYLES */
     .carousel-container {
@@ -142,11 +661,13 @@
       background: var(--ink);
       height: 600px;
     }
+
     .carousel-wrapper {
       display: flex;
-      transition: transform 0.6s cubic-bezier(.23,1,.32,1);
+      transition: transform 0.6s cubic-bezier(.23, 1, .32, 1);
       height: 100%;
     }
+
     .carousel-slide {
       min-width: 100%;
       height: 100%;
@@ -155,24 +676,34 @@
       justify-content: center;
       background: var(--ink);
     }
+
     .carousel-slide img {
       width: 100%;
       height: 100%;
       object-fit: contain;
-      animation: slideIn 0.6s cubic-bezier(.23,1,.32,1);
+      animation: slideIn 0.6s cubic-bezier(.23, 1, .32, 1);
     }
+
     @keyframes slideIn {
-      from { opacity: 0.8; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
+      from {
+        opacity: 0.8;
+        transform: scale(0.95);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
+
     .carousel-nav {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
       width: 44px;
       height: 44px;
-      background: rgba(201,169,110,0.15);
-      border: 1px solid rgba(201,169,110,0.3);
+      background: rgba(201, 169, 110, 0.15);
+      border: 1px solid rgba(201, 169, 110, 0.3);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -181,12 +712,20 @@
       transition: all 0.3s;
       z-index: 10;
     }
+
     .carousel-nav:hover {
-      background: rgba(201,169,110,0.25);
-      border-color: rgba(201,169,110,0.5);
+      background: rgba(201, 169, 110, 0.25);
+      border-color: rgba(201, 169, 110, 0.5);
     }
-    .carousel-nav-prev { left: 16px; }
-    .carousel-nav-next { right: 16px; }
+
+    .carousel-nav-prev {
+      left: 16px;
+    }
+
+    .carousel-nav-next {
+      right: 16px;
+    }
+
     .carousel-dots {
       position: absolute;
       bottom: 16px;
@@ -196,19 +735,22 @@
       gap: 8px;
       z-index: 10;
     }
+
     .dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: rgba(201,169,110,0.3);
+      background: rgba(201, 169, 110, 0.3);
       cursor: pointer;
       transition: all 0.3s;
     }
+
     .dot.active {
       width: 24px;
       border-radius: 3px;
       background: var(--gold);
     }
+
     .carousel-figma-btn {
       position: absolute;
       bottom: 16px;
@@ -230,116 +772,199 @@
       transition: all 0.3s;
       z-index: 10;
     }
+
     .carousel-figma-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(201,169,110,0.3);
+      box-shadow: 0 8px 16px rgba(201, 169, 110, 0.3);
     }
 
     @media (max-width: 900px) {
-      nav { padding: 20px 24px; }
-      .nav-links { display: none; }
-      .nav-cta { display: none; }
-      .nav-toggle { display: flex; }
-      .page-hero { padding: 120px 24px 60px; }
-      .filter-bar { padding: 0 24px; }
-      .projects-section { padding: 0 24px 60px; }
-      .projects-grid { grid-template-columns: 1fr; }
-      .cta-section { flex-direction: column; padding: 60px 24px; }
-      footer { flex-direction: column; gap: 24px; text-align: center; padding: 40px 24px; }
-      .footer-links { flex-wrap: wrap; justify-content: center; }
+      nav {
+        padding: 20px 24px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-cta {
+        display: none;
+      }
+
+      .nav-toggle {
+        display: flex;
+      }
+
+      .page-hero {
+        padding: 120px 24px 60px;
+      }
+
+      .filter-bar {
+        padding: 0 24px;
+      }
+
+      .projects-section {
+        padding: 0 24px 60px;
+      }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-section {
+        flex-direction: column;
+        padding: 60px 24px;
+      }
+
+      footer {
+        flex-direction: column;
+        gap: 24px;
+        text-align: center;
+        padding: 40px 24px;
+      }
+
+      .footer-links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
     }
-  
+
     /* ═══════════════════════════════════════
        DARK MODE — CSS VARIABLE OVERRIDES
     ═══════════════════════════════════════ */
     [data-theme="dark"] {
-      --ink:         #f0ece4;
-      --ink-soft:    #d8d4cc;
-      --cream:       #0e0e18;
-      --mist:        #141420;
-      --white:       #17172a;
-      --slate:       #9090b0;
-      --shadow:      0 20px 60px rgba(0,0,0,0.45);
-      --shadow-gold: 0 8px 32px rgba(201,169,110,0.2);
+      --ink: #f0ece4;
+      --ink-soft: #d8d4cc;
+      --cream: #0e0e18;
+      --mist: #141420;
+      --white: #17172a;
+      --slate: #9090b0;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+      --shadow-gold: 0 8px 32px rgba(201, 169, 110, 0.2);
     }
-    body { transition: background 0.35s ease, color 0.35s ease; }
+
+    body {
+      transition: background 0.35s ease, color 0.35s ease;
+    }
 
     [data-theme="dark"] nav {
-      background: rgba(14,14,24,0.93) !important;
-      border-bottom-color: rgba(201,169,110,0.12) !important;
+      background: rgba(14, 14, 24, 0.93) !important;
+      border-bottom-color: rgba(201, 169, 110, 0.12) !important;
     }
+
     [data-theme="dark"] .mobile-menu {
-      background: rgba(14,14,24,0.97) !important;
+      background: rgba(14, 14, 24, 0.97) !important;
     }
+
     [data-theme="dark"] .what-section,
     [data-theme="dark"] .section-dark,
     [data-theme="dark"] .testimonial-section,
     [data-theme="dark"] footer {
       background: #141420 !important;
     }
-    [data-theme="dark"] .section-mist { background: #141420 !important; }
+
+    [data-theme="dark"] .section-mist {
+      background: #141420 !important;
+    }
+
     [data-theme="dark"] .mini-card,
     [data-theme="dark"] .award-item,
     [data-theme="dark"] .pub-card,
     [data-theme="dark"] .work-card,
     [data-theme="dark"] .project-card {
       background: #1c1c2e !important;
-      border-color: rgba(201,169,110,0.12) !important;
+      border-color: rgba(201, 169, 110, 0.12) !important;
     }
+
     [data-theme="dark"] .skill-block {
-      border-color: rgba(201,169,110,0.1) !important;
+      border-color: rgba(201, 169, 110, 0.1) !important;
     }
+
     [data-theme="dark"] .skill-block-title {
       color: #faf8f4 !important;
     }
+
     [data-theme="dark"] .skill-tag {
       color: rgba(250, 248, 244, 0.65) !important;
-      border-color: rgba(201,169,110,0.25) !important;
+      border-color: rgba(201, 169, 110, 0.25) !important;
     }
+
     [data-theme="dark"] .skill-block:hover .skill-tag {
       color: rgba(250, 248, 244, 0.85) !important;
     }
+
     [data-theme="dark"] .photo-badge {
       background: #1c1c2e !important;
-      border-color: rgba(201,169,110,0.12) !important;
+      border-color: rgba(201, 169, 110, 0.12) !important;
     }
+
     [data-theme="dark"] .form-input,
     [data-theme="dark"] .form-textarea {
       background: #1c1c2e !important;
-      border-color: rgba(201,169,110,0.2) !important;
+      border-color: rgba(201, 169, 110, 0.2) !important;
       color: #f0ece4 !important;
     }
+
     [data-theme="dark"] .footer-logo {
       color: #f0ece4 !important;
     }
-    [data-theme="dark"] .cursor { mix-blend-mode: screen; }
+
+    [data-theme="dark"] .cursor {
+      mix-blend-mode: screen;
+    }
 
     /* ── Theme Toggle Button ── */
     .theme-toggle-btn {
       background: none;
-      border: 1px solid rgba(201,169,110,0.35);
+      border: 1px solid rgba(201, 169, 110, 0.35);
       border-radius: 50%;
-      width: 38px; height: 38px;
-      display: flex; align-items: center; justify-content: center;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
       color: var(--gold);
       transition: all 0.3s;
       flex-shrink: 0;
       padding: 0;
     }
+
     .theme-toggle-btn:hover {
-      background: rgba(201,169,110,0.12);
+      background: rgba(201, 169, 110, 0.12);
       border-color: var(--gold);
     }
-    .theme-toggle-btn svg { width: 16px; height: 16px; pointer-events: none; }
-    .icon-sun  { display: none; }
-    .icon-moon { display: block; }
-    [data-theme="dark"] .icon-sun  { display: block; }
-    [data-theme="dark"] .icon-moon { display: none; }
-    .nav-right { display: flex; align-items: center; gap: 12px; }
 
+    .theme-toggle-btn svg {
+      width: 16px;
+      height: 16px;
+      pointer-events: none;
+    }
+
+    .icon-sun {
+      display: none;
+    }
+
+    .icon-moon {
+      display: block;
+    }
+
+    [data-theme="dark"] .icon-sun {
+      display: block;
+    }
+
+    [data-theme="dark"] .icon-moon {
+      display: none;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
   </style>
 </head>
+
 <body>
   <div class="cursor" id="cursor"></div>
   <div class="cursor-ring" id="cursorRing"></div>
@@ -353,30 +978,32 @@
       <li><a href="contact.html">Contact</a></li>
     </ul>
     <div class="nav-right">
-    <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle dark mode">
-      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-      </svg>
-      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
-        <circle cx="12" cy="12" r="5"/>
-        <line x1="12" y1="1" x2="12" y2="3"/>
-        <line x1="12" y1="21" x2="12" y2="23"/>
-        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-        <line x1="1" y1="12" x2="3" y2="12"/>
-        <line x1="21" y1="12" x2="23" y2="12"/>
-        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-      </svg>
-    </button>
-    <a href="contact.html" class="nav-cta">Let's Talk</a>
-    
-    <button class="nav-toggle" id="navToggle">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-  </div>
+      <button class="theme-toggle-btn" id="themeToggleBtn" title="Toggle dark mode">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round">
+          <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+        </svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+          stroke-linecap="round">
+          <circle cx="12" cy="12" r="5" />
+          <line x1="12" y1="1" x2="12" y2="3" />
+          <line x1="12" y1="21" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="3" y2="12" />
+          <line x1="21" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+      </button>
+      <a href="contact.html" class="nav-cta">Let's Talk</a>
+
+      <button class="nav-toggle" id="navToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
   </nav>
 
   <div class="mobile-menu" id="mobileMenu">
@@ -395,7 +1022,8 @@
     <div class="page-hero-content">
       <div class="page-tag">My Work</div>
       <h1 class="page-title">Selected <em>projects</em></h1>
-      <p class="page-lead">15+ projects spanning SaaS platforms, mobile apps, dashboards and consumer products — designed end-to-end from research to final handoff.</p>
+      <p class="page-lead">15+ projects spanning SaaS platforms, mobile apps, dashboards and consumer products —
+        designed end-to-end from research to final handoff.</p>
     </div>
   </div>
 
@@ -411,104 +1039,137 @@
   <section class="projects-section">
     <div class="projects-grid">
 
-      <!-- 01 Gym SaaS -->
+      <!-- 01 Gym Management SaaS Platform -->
       <div class="project-card featured" data-tags="saas dashboard" style="display: flex; flex-direction: column;">
         <div class="carousel-container" id="carouselContainer-1">
-          <div class="project-badges"><span class="project-badge">Published</span><span class="project-badge">SaaS</span></div>
+          <div class="project-badges"><span class="project-badge">Published</span><span
+              class="project-badge">SaaS</span></div>
           <div class="carousel-wrapper" id="carouselWrapper-1">
-            <div class="carousel-slide"><img src="Gym Management/01 Free Macbook Pro Mockup In Dark Light copy 1.png" alt="Gym Management - Mockup 1"/></div>
-            <div class="carousel-slide"><img src="Gym Management/apple home.png" alt="Gym Management - Mockup 2"/></div>
-            <div class="carousel-slide"><img src="Gym Management/Free MacBook Pro On The Wooden Dresser Mockup copy.png" alt="Gym Management - Mockup 3"/></div>
-            <div class="carousel-slide"><img src="Gym Management/MacBook Pro in Cafe Mockup copy 1.png" alt="Gym Management - Mockup 4"/></div>
-            <div class="carousel-slide"><img src="Gym Management/1 copy 1.png" alt="Gym Management - Mockup 5"/></div>
-            <div class="carousel-slide"><img src="Gym Management/645shots_so 1.png" alt="Gym Management - Mockup 6"/></div>
-            <div class="carousel-slide"><img src="Gym Management/apple calendar.png" alt="Gym Management - Mockup 7"/></div>
-            <div class="carousel-slide"><img src="Gym Management/apple progress.png" alt="Gym Management - Mockup 8"/></div>
-            <div class="carousel-slide"><img src="Gym Management/apple qr code .png" alt="Gym Management - Mockup 9"/></div>
+            <div class="carousel-slide"><img src="Gym Management/01 Free Macbook Pro Mockup In Dark Light copy 1.png"
+                alt="Gym Management SaaS Platform - Mockup 1" /></div>
+            <div class="carousel-slide"><img src="Gym Management/apple home.png"
+                alt="Gym Management SaaS Platform - Mockup 2" /></div>
+            <div class="carousel-slide"><img src="Gym Management/Free MacBook Pro On The Wooden Dresser Mockup copy.png"
+                alt="Gym Management SaaS Platform - Mockup 3" /></div>
+            <div class="carousel-slide"><img src="Gym Management/MacBook Pro in Cafe Mockup copy 1.png"
+                alt="Gym Management SaaS Platform - Mockup 4" /></div>
+            <div class="carousel-slide"><img src="Gym Management/1 copy 1.png"
+                alt="Gym Management SaaS Platform - Mockup 5" /></div>
+            <div class="carousel-slide"><img src="Gym Management/645shots_so 1.png"
+                alt="Gym Management SaaS Platform - Mockup 6" /></div>
+            <div class="carousel-slide"><img src="Gym Management/apple calendar.png"
+                alt="Gym Management SaaS Platform - Mockup 7" /></div>
+            <div class="carousel-slide"><img src="Gym Management/apple progress.png"
+                alt="Gym Management SaaS Platform - Mockup 8" /></div>
+            <div class="carousel-slide"><img src="Gym Management/apple qr code .png"
+                alt="Gym Management SaaS Platform - Mockup 9" /></div>
           </div>
           <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('1')">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </button>
           <button class="carousel-nav carousel-nav-next" onclick="carouselNext('1')">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </button>
           <div class="carousel-dots" id="carouselDots-1"></div>
         </div>
         <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
-          <div class="project-type">SaaS · Multi-Vendor · Dashboard</div>
+          <div class="project-type">SaaS · Multi-Role Dashboard</div>
           <div class="project-title">Gym Management SaaS Platform</div>
           <div class="project-desc" style="flex: 1;">
-            <strong>Overview:</strong> Designed end-to-end multi-vendor SaaS platform enabling gym members to join gyms, subscribe to plans, and book classes. The platform includes a comprehensive workout builder for trainers and role-based dashboards for Trainer, Gym Admin, and Super Admin roles with full management capabilities.
-            <br/><br/>
-            <strong>Key Features:</strong> Mobile app for members · Workout builder for trainers · Real-time class booking · Multi-role dashboards · Vendor management system · Analytics and reporting
-            <br/><br/>
-            <strong>Role:</strong> Led UX Research, information architecture, wireframing, prototyping and high-fidelity UI design. Collaborated with developers and product stakeholders throughout the design process.
-            <br/><br/>
-            <strong>Deliverables:</strong> User research findings · Wireframes and flows · Interactive prototypes · Design system · High-fidelity UI specs · Component library
+            <strong>Overview:</strong> Designed an end-to-end multi-vendor SaaS platform for gyms where members can join
+            gyms, subscribe to plans, book classes, and track fitness activity. The system supports Trainer, Gym Admin,
+            and Super Admin roles with dedicated dashboards and management workflows.<br><br>
+            <strong>Key Features:</strong> Member onboarding · Plan subscription · Class booking · Workout builder ·
+            Role-based dashboards · QR access flow · Progress tracking<br><br>
+            <strong>Role:</strong> Led UX strategy, information architecture, user flow design, dashboard planning, and
+            high-fidelity UI design for the complete SaaS experience.<br><br>
+            <strong>Deliverables:</strong> User flows and wireframes · Interactive prototype · Multi-role dashboard UI ·
+            Mobile and web screen designs · Design system components
           </div>
           <div class="project-tags">
-            <span class="project-tag-chip">UX Research</span>
-            <span class="project-tag-chip">Mobile App</span>
-            <span class="project-tag-chip">Multi-role Dashboard</span>
-            <span class="project-tag-chip">Figma</span>
-            <span class="project-tag-chip">Design System</span>
+            <span class="project-tag-chip">SaaS</span>
+            <span class="project-tag-chip">Dashboard</span>
+            <span class="project-tag-chip">Role-based UX</span>
+            <span class="project-tag-chip">Product Design</span>
           </div>
-          <a href="https://www.figma.com/design/xGxsqiI8NvzC5E9trZyhOy/Soundsbywade-%7C%7C-Quinn_Macintyre?node-id=0-1&t=EXRsilsOfvCWHU4t-1" target="_blank" class="project-link">
-            View In Figma
+          <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
+            View Case Study
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </a>
         </div>
       </div>
 
-      <!-- 02 AI Financial -->
-      <div class="project-card featured" data-tags="ai mobile" style="display: flex; flex-direction: column;">
+      <!-- 02 Financial Decision Support Simulator -->
+      <div class="project-card featured" data-tags="ai mobile dashboard" style="display: flex; flex-direction: column;">
         <div class="carousel-container" id="carouselContainer-2">
-          <div class="project-badges"><span class="project-badge">AI</span><span class="project-badge">FinTech</span></div>
+          <div class="project-badges"><span class="project-badge">AI</span><span class="project-badge">FinTech</span>
+          </div>
           <div class="carousel-wrapper" id="carouselWrapper-2">
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 1 Placeholder</div></div>
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 2 Placeholder</div></div>
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 3 Placeholder</div></div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Financial Decision Support Simulator<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Concept
+                  Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Financial Decision Support Simulator<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">User
+                  Flow Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#3a3354;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Financial Decision Support Simulator<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Interface
+                  Preview</span></div>
+            </div>
           </div>
           <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('2')">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </button>
           <button class="carousel-nav carousel-nav-next" onclick="carouselNext('2')">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </button>
           <div class="carousel-dots" id="carouselDots-2"></div>
         </div>
         <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
-          <div class="project-type">AI · FinTech · Mobile App</div>
+          <div class="project-type">AI · FinTech · Mobile</div>
           <div class="project-title">Financial Decision Support Simulator</div>
-          <div class="project-desc">
-            <strong>Overview:</strong> Designed an AI‑powered FinTech mobile application that helps users simulate future purchases before buying. The platform predicts financial impact, estimates recovery time, and provides smart budgeting insights to support informed and responsible spending decisions.
-            <br/><br/>
-            <strong>Key Features:</strong> Purchase impact simulation · Financial recovery time prediction · AI‑based budget recommendations · Scenario comparison (buy now vs later) · Personalized insights dashboard
-            <br/><br/>
-            <strong>Role:</strong> Led product ideation, UX strategy, user flow design, and AI concept definition. Designed end‑to‑end mobile experience and collaborated with stakeholders to align financial logic with real user needs.
-            <br/><br/>
-            <strong>Deliverables:</strong> Product concept documentation · User flows and wireframes · Interactive prototype · AI logic framework · High‑fidelity mobile UI designs
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed an AI-powered FinTech mobile application that helps users simulate
+            future purchases before buying. The platform predicts financial impact, estimates recovery time, and
+            provides smart budgeting insights to support informed and responsible spending decisions.<br><br>
+            <strong>Key Features:</strong> Purchase impact simulation · Financial recovery time prediction · AI-based
+            budget recommendations · Scenario comparison (buy now vs later) · Personalized insights dashboard<br><br>
+            <strong>Role:</strong> Led product ideation, UX strategy, user flow design, and AI concept definition.
+            Designed the end-to-end mobile experience and collaborated with stakeholders to align financial logic with
+            real user needs.<br><br>
+            <strong>Deliverables:</strong> Product concept documentation · User flows and wireframes · Interactive
+            prototype · AI logic framework · High-fidelity mobile UI designs
           </div>
           <div class="project-tags">
-            <span class="project-tag-chip">AI UX</span>
-            <span class="project-tag-chip">Mobile Design</span>
-            <span class="project-tag-chip">Prototyping</span>
-            <span class="project-tag-chip">User Flows</span>
+            <span class="project-tag-chip">FinTech UX</span>
+            <span class="project-tag-chip">AI Concept</span>
+            <span class="project-tag-chip">Mobile App</span>
+            <span class="project-tag-chip">Decision Support</span>
           </div>
           <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
-            View on Behance
+            View Case Study
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </a>
         </div>
@@ -517,236 +1178,1081 @@
       <!-- 03 Geography Geyser -->
       <div class="project-card featured" data-tags="mobile" style="display: flex; flex-direction: column;">
         <div class="carousel-container" id="carouselContainer-3">
-          <div class="project-badges"><span class="project-badge">Published</span><span class="project-badge">Mobile</span></div>
+          <div class="project-badges"><span class="project-badge">Education</span></div>
           <div class="carousel-wrapper" id="carouselWrapper-3">
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 1 Placeholder</div></div>
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 2 Placeholder</div></div>
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 3 Placeholder</div></div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Geography Geyser<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Concept
+                  Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Geography Geyser<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">User
+                  Flow Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#3a3354;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Geography Geyser<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Interface
+                  Preview</span></div>
+            </div>
           </div>
           <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('3')">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </button>
           <button class="carousel-nav carousel-nav-next" onclick="carouselNext('3')">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </button>
           <div class="carousel-dots" id="carouselDots-3"></div>
         </div>
         <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
-<div class="project-type">Mobile · EdTech · Play Store</div>
-          <div class="project-title">Geography Gayser</div>
-          <div class="project-desc">A geography-based quiz learning platform published on the Play Store. Features interactive quiz system, result analytics and performance tracking, and an admin dashboard for quiz management and user progress monitoring.</div>
+          <div class="project-type">Education · Quiz App · Learning</div>
+          <div class="project-title">Geography Geyser</div>
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed an interactive geography learning product that helps users explore
+            countries, places, maps, and location-based knowledge through a playful and engaging experience.<br><br>
+            <strong>Key Features:</strong> Map-based learning · Geography quizzes · Progress tracking · Category-based
+            questions · Score and achievement system<br><br>
+            <strong>Role:</strong> Created the product concept, learning flow, quiz structure, and mobile UI direction
+            to make geography education more visual, simple, and engaging.<br><br>
+            <strong>Deliverables:</strong> App concept · User journey · Wireframes · Quiz flow · High-fidelity mobile UI
+            screens
+          </div>
           <div class="project-tags">
-            <span class="project-tag-chip">Mobile App</span>
-            <span class="project-tag-chip">EdTech UX</span>
-            <span class="project-tag-chip">Analytics Dashboard</span>
-            <span class="project-tag-chip">Play Store</span>
-          </div>
-          <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
-            View Case Study
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </a>
-      </div></div>
-
-      <!-- 04 Pepeep Food -->
-      <div class="project-card featured" data-tags="mobile" style="display: flex; flex-direction: column;">
-        <div class="carousel-container" id="carouselContainer-4">
-          <div class="project-badges"><span class="project-badge">Mobile</span></div>
-          <div class="carousel-wrapper" id="carouselWrapper-4">
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 1 Placeholder</div></div>
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 2 Placeholder</div></div>
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 3 Placeholder</div></div>
-          </div>
-          <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('4')">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </button>
-          <button class="carousel-nav carousel-nav-next" onclick="carouselNext('4')">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </button>
-          <div class="carousel-dots" id="carouselDots-4"></div>
-        </div>
-        <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
-<div class="project-type">Mobile · Food Tech · Drive-in</div>
-          <div class="project-title">Pepeep Food</div>
-          <div class="project-desc">A food ordering platform with a unique drive-in pickup workflow. Features a car-based pickup system with in-app horn notification — a delightfully novel interaction that sets it apart from standard food delivery apps.</div>
-          <div class="project-tags">
-            <span class="project-tag-chip">Mobile UX</span>
-            <span class="project-tag-chip">Novel Interaction</span>
-            <span class="project-tag-chip">Food Tech</span>
-            <span class="project-tag-chip">Prototyping</span>
-          </div>
-          <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
-            View Case Study
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </a>
-      </div></div>
-
-      <!-- 05 Car Auction -->
-      <div class="project-card featured" data-tags="b2b dashboard" style="display: flex; flex-direction: column;">
-        <div class="carousel-container" id="carouselContainer-5">
-          <div class="project-badges"><span class="project-badge">B2B</span></div>
-          <div class="carousel-wrapper" id="carouselWrapper-5">
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 1 Placeholder</div></div>
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 2 Placeholder</div></div>
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 3 Placeholder</div></div>
-          </div>
-          <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('5')">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </button>
-          <button class="carousel-nav carousel-nav-next" onclick="carouselNext('5')">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </button>
-          <div class="carousel-dots" id="carouselDots-5"></div>
-        </div>
-        <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
-<div class="project-type">B2B · Auction · Admin Dashboard</div>
-          <div class="project-title">Car Auction Platform</div>
-          <div class="project-desc">B2B dealer bidding system with vehicle listing, live auction management and a comprehensive admin dashboard for monitoring bids, managing listings and overseeing the entire auction ecosystem.</div>
-          <div class="project-tags">
-            <span class="project-tag-chip">B2B UX</span>
-            <span class="project-tag-chip">Admin Dashboard</span>
-            <span class="project-tag-chip">Bidding System</span>
-            <span class="project-tag-chip">Web App</span>
-          </div>
-          <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
-            View Case Study
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </a>
-      </div></div>
-
-      <!-- 06 Mechanic Chai -->
-      <div class="project-card featured" data-tags="mobile" style="display: flex; flex-direction: column;">
-        <div class="carousel-container" id="carouselContainer-6">
-          <div class="project-badges"><span class="project-badge">Mobile</span></div>
-          <div class="carousel-wrapper" id="carouselWrapper-6">
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 1 Placeholder</div></div>
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 2 Placeholder</div></div>
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 3 Placeholder</div></div>
-          </div>
-          <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('6')">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </button>
-          <button class="carousel-nav carousel-nav-next" onclick="carouselNext('6')">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </button>
-          <div class="carousel-dots" id="carouselDots-6"></div>
-        </div>
-        <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
-<div class="project-type">Mobile · Service Platform</div>
-          <div class="project-title">Mechanic Chai</div>
-          <div class="project-desc">A platform connecting stranded drivers with nearby mechanics for instant roadside support. Designed with simple, intuitive UI/UX for diverse users including bikers, CNG drivers and truck drivers.</div>
-          <div class="project-tags">
-            <span class="project-tag-chip">Service UX</span>
-            <span class="project-tag-chip">Location-based</span>
-            <span class="project-tag-chip">Accessibility</span>
+            <span class="project-tag-chip">Learning UX</span>
+            <span class="project-tag-chip">Quiz Flow</span>
+            <span class="project-tag-chip">Gamification</span>
             <span class="project-tag-chip">Mobile Design</span>
           </div>
           <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
             View Case Study
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </a>
-      </div></div>
+        </div>
+      </div>
 
-      <!-- 07 MediConnect -->
-      <div class="project-card featured" data-tags="mobile dashboard" style="display: flex; flex-direction: column;">
+      <!-- 04 Pepeep Food -->
+      <div class="project-card featured" data-tags="mobile" style="display: flex; flex-direction: column;">
+        <div class="carousel-container" id="carouselContainer-4">
+          <div class="project-badges"><span class="project-badge">Food Tech</span></div>
+          <div class="carousel-wrapper" id="carouselWrapper-4">
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Pepeep Food<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Concept
+                  Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Pepeep Food<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">User
+                  Flow Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#3a3354;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Pepeep Food<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Interface
+                  Preview</span></div>
+            </div>
+          </div>
+          <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('4')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="carousel-nav carousel-nav-next" onclick="carouselNext('4')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <div class="carousel-dots" id="carouselDots-4"></div>
+        </div>
+        <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
+          <div class="project-type">Mobile · Food Tech · Drive-in</div>
+          <div class="project-title">Pepeep Food</div>
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed a food ordering platform with a unique drive-in pickup workflow. Users
+            can order food, arrive by car, and notify the restaurant through an in-app horn interaction for a faster
+            pickup experience.<br><br>
+            <strong>Key Features:</strong> Food ordering flow · Drive-in pickup · In-app horn notification · Restaurant
+            order status · Pickup-ready alerts<br><br>
+            <strong>Role:</strong> Led the UX flow, interaction concept, user journey, and mobile UI design to create a
+            memorable food ordering experience beyond standard delivery apps.<br><br>
+            <strong>Deliverables:</strong> User flow · Wireframes · Interactive prototype · High-fidelity mobile UI ·
+            Interaction concept documentation
+          </div>
+          <div class="project-tags">
+            <span class="project-tag-chip">Mobile UX</span>
+            <span class="project-tag-chip">Food Tech</span>
+            <span class="project-tag-chip">Novel Interaction</span>
+            <span class="project-tag-chip">Prototyping</span>
+          </div>
+          <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
+            View Case Study
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 05 Car Auction Platform -->
+      <div class="project-card featured" data-tags="b2b dashboard" style="display: flex; flex-direction: column;">
+        <div class="carousel-container" id="carouselContainer-5">
+          <div class="project-badges"><span class="project-badge">B2B</span></div>
+          <div class="carousel-wrapper" id="carouselWrapper-5">
+            <div class="carousel-slide"><img src="Car auction/1.png" alt="Car Auction Platform - Mockup 1" /></div>
+            <div class="carousel-slide"><img src="Car auction/Free Front View MacBook 16 Pro Mockup copy.png"
+                alt="Car Auction Platform - Mockup 2" /></div>
+            <div class="carousel-slide"><img src="Car auction/Free Laying iPhone 16 Pro on Table Mockup copy.png"
+                alt="Car Auction Platform - Mockup 3" /></div>
+            <div class="carousel-slide"><img src="Car auction/Free MacBook Pro on Settee Mockup copy.png"
+                alt="Car Auction Platform - Mockup 4" /></div>
+            <div class="carousel-slide"><img src="Car auction/Free iPhone Pro in Hands Mockup copy.png"
+                alt="Car Auction Platform - Mockup 5" /></div>
+            <div class="carousel-slide"><img src="Car auction/assa.png" alt="Car Auction Platform - Mockup 6" /></div>
+            <div class="carousel-slide"><img src="Car auction/iPhone X PSD Mockup copysfsf.png"
+                alt="Car Auction Platform - Mockup 7" /></div>
+          </div>
+          <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('5')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="carousel-nav carousel-nav-next" onclick="carouselNext('5')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <div class="carousel-dots" id="carouselDots-5"></div>
+        </div>
+        <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
+          <div class="project-type">B2B · Auction Platform</div>
+          <div class="project-title">Car Auction Platform</div>
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed a B2B car auction platform where dealers can view vehicle listings,
+            place bids, track auction activity, and manage buying workflows through a clean and professional
+            interface.<br><br>
+            <strong>Key Features:</strong> Vehicle listing pages · Dealer bidding flow · Auction status tracking · Admin
+            monitoring dashboard · Responsive vehicle detail experience<br><br>
+            <strong>Role:</strong> Designed the end-to-end auction experience, structured the listing and bidding flows,
+            and created dashboard layouts for dealer and admin use cases.<br><br>
+            <strong>Deliverables:</strong> User flows · Wireframes · Auction journey map · High-fidelity web UI ·
+            Responsive mockups
+          </div>
+          <div class="project-tags">
+            <span class="project-tag-chip">Auction UX</span>
+            <span class="project-tag-chip">Admin Dashboard</span>
+            <span class="project-tag-chip">B2B Platform</span>
+            <span class="project-tag-chip">Responsive UI</span>
+          </div>
+          <a href="https://www.behance.net/gallery/247944633/Car-Auction-UX-Case-study" target="_blank"
+            class="project-link">
+            View Case Study
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 06 Personal AI Assistant -->
+      <div class="project-card featured" data-tags="ai mobile" style="display: flex; flex-direction: column;">
+        <div class="carousel-container" id="carouselContainer-6">
+          <div class="project-badges"><span class="project-badge">AI</span><span class="project-badge">Voice</span>
+          </div>
+          <div class="carousel-wrapper" id="carouselWrapper-6">
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Personal AI Assistant<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Concept
+                  Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Personal AI Assistant<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">User
+                  Flow Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#3a3354;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Personal AI Assistant<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Interface
+                  Preview</span></div>
+            </div>
+          </div>
+          <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('6')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="carousel-nav carousel-nav-next" onclick="carouselNext('6')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <div class="carousel-dots" id="carouselDots-6"></div>
+        </div>
+        <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
+          <div class="project-type">AI · Productivity · Voice Assistant</div>
+          <div class="project-title">Personal AI Assistant</div>
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed an AI chatbot assistant for working mothers who struggle to organize
+            everyday responsibilities. Users can speak their thoughts by voice, and the assistant turns them into
+            organized tasks, reminders, and schedules.<br><br>
+            <strong>Key Features:</strong> Voice-based thought input · AI task organization · Smart schedule creation ·
+            Daily priority planning · Reminder and routine support<br><br>
+            <strong>Role:</strong> Defined the core product idea, conversation flow, AI task logic, and mobile UX
+            structure to reduce daily cognitive load for busy working mothers.<br><br>
+            <strong>Deliverables:</strong> Product concept · Chatbot flow · Voice input journey · Task scheduling logic
+            · High-fidelity mobile UI
+          </div>
+          <div class="project-tags">
+            <span class="project-tag-chip">AI Assistant</span>
+            <span class="project-tag-chip">Voice Input</span>
+            <span class="project-tag-chip">Task Planning</span>
+            <span class="project-tag-chip">Productivity</span>
+          </div>
+          <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
+            View Case Study
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 07 AI Medication -->
+      <div class="project-card featured" data-tags="ai mobile dashboard" style="display: flex; flex-direction: column;">
         <div class="carousel-container" id="carouselContainer-7">
-          <div class="project-badges"><span class="project-badge">Healthcare</span></div>
+          <div class="project-badges"><span class="project-badge">Healthcare</span><span class="project-badge">AI</span>
+          </div>
           <div class="carousel-wrapper" id="carouselWrapper-7">
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 1 Placeholder</div></div>
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 2 Placeholder</div></div>
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 3 Placeholder</div></div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                AI Medication<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Concept
+                  Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                AI Medication<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">User
+                  Flow Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#3a3354;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                AI Medication<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Interface
+                  Preview</span></div>
+            </div>
           </div>
           <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('7')">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </button>
           <button class="carousel-nav carousel-nav-next" onclick="carouselNext('7')">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </button>
           <div class="carousel-dots" id="carouselDots-7"></div>
         </div>
         <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
-<div class="project-type">University Project · Healthcare</div>
-          <div class="project-title">MediConnect</div>
-          <div class="project-desc">Integrated healthcare platform combining blood and organ donation, emergency services, pharmaceuticals and hospital appointment booking — all in one seamless experience. Built with HTML, PHP and MySQL.</div>
+          <div class="project-type">Healthcare · AI · Medication Reminder</div>
+          <div class="project-title">AI Medication</div>
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed a medication management app for patients who often forget to take
+            medicine. The app supports reminders, patient monitoring, and automatic medicine detection through
+            prescription scanning.<br><br>
+            <strong>Key Features:</strong> Medicine reminder · Patient account monitoring · Caregiver/monitor dashboard
+            · Prescription photo upload · AI-based medicine detection<br><br>
+            <strong>Role:</strong> Led the healthcare UX concept, patient journey, prescription scanning flow, reminder
+            logic, and monitoring experience for linked caregiver accounts.<br><br>
+            <strong>Deliverables:</strong> Healthcare app concept · User flows · Reminder workflow · Prescription scan
+            flow · High-fidelity mobile UI
+          </div>
           <div class="project-tags">
             <span class="project-tag-chip">Healthcare UX</span>
-            <span class="project-tag-chip">Multi-service Platform</span>
-            <span class="project-tag-chip">Web App</span>
-            <span class="project-tag-chip">HTML · PHP</span>
+            <span class="project-tag-chip">AI Scan</span>
+            <span class="project-tag-chip">Reminder</span>
+            <span class="project-tag-chip">Care Monitor</span>
           </div>
-          <a href="https://github.com/tushartanzim" target="_blank" class="project-link">
-            View on GitHub
+          <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
+            View Case Study
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </a>
-      </div></div>
+        </div>
+      </div>
 
-      <!-- 08 E-Daak -->
+      <!-- 08 Not Overland Tech -->
       <div class="project-card featured" data-tags="saas" style="display: flex; flex-direction: column;">
         <div class="carousel-container" id="carouselContainer-8">
-          <div class="project-badges"><span class="project-badge">Collaborative</span></div>
+          <div class="project-badges"><span class="project-badge">E-commerce</span></div>
           <div class="carousel-wrapper" id="carouselWrapper-8">
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 1 Placeholder</div></div>
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 2 Placeholder</div></div>
-            <div class="carousel-slide"><div style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;">Image 3 Placeholder</div></div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Not Overland Tech<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Concept
+                  Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Not Overland Tech<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">User
+                  Flow Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#3a3354;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Not Overland Tech<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Interface
+                  Preview</span></div>
+            </div>
           </div>
           <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('8')">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </button>
           <button class="carousel-nav carousel-nav-next" onclick="carouselNext('8')">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </button>
           <div class="carousel-dots" id="carouselDots-8"></div>
         </div>
         <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
-<div class="project-type">Collaborative · Digital Platform</div>
-          <div class="project-title">E-Daak — Digital Mailbox</div>
-          <div class="project-desc">A digital mailbox platform for secure online communication and document delivery. Implemented user-friendly UI/UX features to ensure accessibility, efficiency and a smooth login experience for all users.</div>
+          <div class="project-type">E-commerce · Product Showcase</div>
+          <div class="project-title">Not Overland Tech</div>
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed an e-commerce and product showcase website where users can explore
+            technology products, view details, and purchase items through a familiar online shopping experience.<br><br>
+            <strong>Key Features:</strong> Product showcase pages · Product detail view · Shopping flow · Category
+            browsing · Typical e-commerce checkout structure<br><br>
+            <strong>Role:</strong> Designed the website structure, product browsing experience, purchase journey, and
+            clean visual UI for a modern tech-focused online store.<br><br>
+            <strong>Deliverables:</strong> Website structure · User flow · Wireframes · Product page UI · High-fidelity
+            e-commerce screens
+          </div>
           <div class="project-tags">
-            <span class="project-tag-chip">Communication UX</span>
-            <span class="project-tag-chip">Accessibility</span>
-            <span class="project-tag-chip">Web App</span>
-            <span class="project-tag-chip">Figma</span>
+            <span class="project-tag-chip">E-commerce</span>
+            <span class="project-tag-chip">Product Showcase</span>
+            <span class="project-tag-chip">Web Design</span>
+            <span class="project-tag-chip">Shopping Flow</span>
           </div>
           <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
             View Case Study
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
           </a>
-      </div></div>
+        </div>
+      </div>
+
+      <!-- 09 Anchor Up -->
+      <div class="project-card featured" data-tags="mobile dashboard" style="display: flex; flex-direction: column;">
+        <div class="carousel-container" id="carouselContainer-9">
+          <div class="project-badges"><span class="project-badge">Social</span></div>
+          <div class="carousel-wrapper" id="carouselWrapper-9">
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Anchor Up<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Concept
+                  Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Anchor Up<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">User
+                  Flow Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#3a3354;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Anchor Up<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Interface
+                  Preview</span></div>
+            </div>
+          </div>
+          <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('9')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="carousel-nav carousel-nav-next" onclick="carouselNext('9')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <div class="carousel-dots" id="carouselDots-9"></div>
+        </div>
+        <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
+          <div class="project-type">Social Network · Connection App</div>
+          <div class="project-title">Anchor Up</div>
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed a connection-building app inspired by professional and social networking
+            platforms. Users can create accounts and connect through four relationship types: professional, romantic,
+            spiritual, and social.<br><br>
+            <strong>Key Features:</strong> Profile creation · Four connection categories · Pod-based first interaction ·
+            Friend connection flow · Feed and social features<br><br>
+            <strong>Role:</strong> Defined the connection model, onboarding journey, pod-based conversation flow, and
+            social networking experience to make connections more intentional.<br><br>
+            <strong>Deliverables:</strong> Product concept · User flows · Connection model · Wireframes · High-fidelity
+            mobile UI
+          </div>
+          <div class="project-tags">
+            <span class="project-tag-chip">Social UX</span>
+            <span class="project-tag-chip">Connection Flow</span>
+            <span class="project-tag-chip">Community</span>
+            <span class="project-tag-chip">Mobile App</span>
+          </div>
+          <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
+            View Case Study
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 10 Spare -->
+      <div class="project-card featured" data-tags="mobile" style="display: flex; flex-direction: column;">
+        <div class="carousel-container" id="carouselContainer-10">
+          <div class="project-badges"><span class="project-badge">Marketplace</span></div>
+          <div class="carousel-wrapper" id="carouselWrapper-10">
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Spare<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Concept
+                  Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Spare<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">User
+                  Flow Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#3a3354;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Spare<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Interface
+                  Preview</span></div>
+            </div>
+          </div>
+          <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('10')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="carousel-nav carousel-nav-next" onclick="carouselNext('10')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <div class="carousel-dots" id="carouselDots-10"></div>
+        </div>
+        <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
+          <div class="project-type">Marketplace · Charity · Zero Waste</div>
+          <div class="project-title">Spare</div>
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed a food, goods, and product selling app with a charity collection option.
+            The goal is to reduce waste by allowing shops and general users to sell items at reasonable prices or donate
+            unused food to charities.<br><br>
+            <strong>Key Features:</strong> Product selling flow · Charity food collection · Waste reduction model ·
+            Reasonable price marketplace · Donor and charity user journeys<br><br>
+            <strong>Role:</strong> Created the product concept, marketplace structure, charity flow, and mobile UX that
+            connects sellers, buyers, and charity organizations.<br><br>
+            <strong>Deliverables:</strong> Product concept · User personas · Marketplace flow · Charity collection flow
+            · High-fidelity mobile UI
+          </div>
+          <div class="project-tags">
+            <span class="project-tag-chip">Marketplace</span>
+            <span class="project-tag-chip">Charity Flow</span>
+            <span class="project-tag-chip">Zero Waste</span>
+            <span class="project-tag-chip">Mobile UX</span>
+          </div>
+          <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
+            View Case Study
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 11 CPIN — Child Protection Intelligence Network -->
+      <div class="project-card featured" data-tags="mobile dashboard" style="display: flex; flex-direction: column;">
+        <div class="carousel-container" id="carouselContainer-11">
+          <div class="project-badges"><span class="project-badge">Civic Tech</span></div>
+          <div class="carousel-wrapper" id="carouselWrapper-11">
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                CPIN — Child Protection Intelligence Network<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Concept
+                  Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                CPIN — Child Protection Intelligence Network<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">User
+                  Flow Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#3a3354;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                CPIN — Child Protection Intelligence Network<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Interface
+                  Preview</span></div>
+            </div>
+          </div>
+          <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('11')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="carousel-nav carousel-nav-next" onclick="carouselNext('11')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <div class="carousel-dots" id="carouselDots-11"></div>
+        </div>
+        <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
+          <div class="project-type">Civic Safety · Reporting Platform</div>
+          <div class="project-title">CPIN — Child Protection Intelligence Network</div>
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed a child protection intelligence network where users can report safety
+            issues based on location and get involved with relevant cases through a structured reporting and case
+            participation system.<br><br>
+            <strong>Key Features:</strong> Location-based issue reporting · Case involvement flow · Report tracking ·
+            Community safety updates · Admin review structure<br><br>
+            <strong>Role:</strong> Designed the reporting journey, case involvement model, safety-focused interface, and
+            dashboard structure for managing sensitive civic reports.<br><br>
+            <strong>Deliverables:</strong> User flow · Reporting form design · Case tracking flow · Dashboard UI ·
+            High-fidelity screens
+          </div>
+          <div class="project-tags">
+            <span class="project-tag-chip">Safety UX</span>
+            <span class="project-tag-chip">Reporting</span>
+            <span class="project-tag-chip">Case Tracking</span>
+            <span class="project-tag-chip">Civic Tech</span>
+          </div>
+          <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
+            View Case Study
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 12 Spartst -->
+      <div class="project-card featured" data-tags="saas dashboard" style="display: flex; flex-direction: column;">
+        <div class="carousel-container" id="carouselContainer-12">
+          <div class="project-badges"><span class="project-badge">Music</span></div>
+          <div class="carousel-wrapper" id="carouselWrapper-12">
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Spartst<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Concept
+                  Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Spartst<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">User
+                  Flow Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#3a3354;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Spartst<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Interface
+                  Preview</span></div>
+            </div>
+          </div>
+          <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('12')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="carousel-nav carousel-nav-next" onclick="carouselNext('12')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <div class="carousel-dots" id="carouselDots-12"></div>
+        </div>
+        <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
+          <div class="project-type">Music Collaboration · Marketplace</div>
+          <div class="project-title">Spartst</div>
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed a music collaboration web app where users can create accounts,
+            collaborate on music projects, post job-style briefs, sell music assets, and connect with other
+            creators.<br><br>
+            <strong>Key Features:</strong> Creator profiles · Music project collaboration · Job brief posting · Music
+            asset marketplace · Connection requests · Social feed<br><br>
+            <strong>Role:</strong> Led the product structure, collaboration flow, marketplace journey, feed experience,
+            and high-fidelity web app interface.<br><br>
+            <strong>Deliverables:</strong> Product map · User flows · Marketplace flow · Collaboration dashboard ·
+            High-fidelity web UI
+          </div>
+          <div class="project-tags">
+            <span class="project-tag-chip">Collaboration</span>
+            <span class="project-tag-chip">Marketplace</span>
+            <span class="project-tag-chip">Social Feed</span>
+            <span class="project-tag-chip">Web App</span>
+          </div>
+          <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
+            View Case Study
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 13 Zenzi Wellness -->
+      <div class="project-card featured" data-tags="ai mobile" style="display: flex; flex-direction: column;">
+        <div class="carousel-container" id="carouselContainer-13">
+          <div class="project-badges"><span class="project-badge">Wellness</span><span class="project-badge">AI</span>
+          </div>
+          <div class="carousel-wrapper" id="carouselWrapper-13">
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Zenzi Wellness<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Concept
+                  Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Zenzi Wellness<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">User
+                  Flow Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#3a3354;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Zenzi Wellness<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Interface
+                  Preview</span></div>
+            </div>
+          </div>
+          <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('13')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="carousel-nav carousel-nav-next" onclick="carouselNext('13')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <div class="carousel-dots" id="carouselDots-13"></div>
+        </div>
+        <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
+          <div class="project-type">Wellness · Mental Health · AI</div>
+          <div class="project-title">Zenzi Wellness</div>
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed a wellness app with an Afro-inspired visual theme where users can watch
+            meditation videos, listen to calming music, receive encouraging affirmations, and get support from an AI
+            mental health chatbot.<br><br>
+            <strong>Key Features:</strong> Meditation videos · Relaxing music · Daily affirmations · AI mental health
+            chatbot · Afro-themed visual experience<br><br>
+            <strong>Role:</strong> Created the wellness journey, content structure, chatbot support flow, and visual UI
+            direction focused on calmness, encouragement, and cultural warmth.<br><br>
+            <strong>Deliverables:</strong> Wellness app concept · User flow · Chatbot flow · Mood-support screens ·
+            High-fidelity mobile UI
+          </div>
+          <div class="project-tags">
+            <span class="project-tag-chip">Wellness UX</span>
+            <span class="project-tag-chip">Mental Health</span>
+            <span class="project-tag-chip">AI Chatbot</span>
+            <span class="project-tag-chip">Afro Theme</span>
+          </div>
+          <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
+            View Case Study
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 14 Product Portfolio — Bedside Terminal -->
+      <div class="project-card featured" data-tags="dashboard" style="display: flex; flex-direction: column;">
+        <div class="carousel-container" id="carouselContainer-14">
+          <div class="project-badges"><span class="project-badge">Healthcare</span></div>
+          <div class="carousel-wrapper" id="carouselWrapper-14">
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Product Portfolio — Bedside Terminal<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Concept
+                  Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Product Portfolio — Bedside Terminal<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">User
+                  Flow Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#3a3354;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Product Portfolio — Bedside Terminal<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Interface
+                  Preview</span></div>
+            </div>
+          </div>
+          <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('14')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="carousel-nav carousel-nav-next" onclick="carouselNext('14')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <div class="carousel-dots" id="carouselDots-14"></div>
+        </div>
+        <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
+          <div class="project-type">Healthcare Product · Patient Experience</div>
+          <div class="project-title">Product Portfolio — Bedside Terminal</div>
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed a product portfolio presentation for a bedside terminal used by admitted
+            hospital patients. Through the terminal, patients can call nurses, request help, and access entertainment
+            such as videos, movies, and TV.<br><br>
+            <strong>Key Features:</strong> Nurse call interface · Help request flow · Entertainment access ·
+            Patient-friendly terminal UI · Hospital service support<br><br>
+            <strong>Role:</strong> Structured the product storytelling, patient use cases, feature presentation, and
+            interface direction for a healthcare hardware-software product.<br><br>
+            <strong>Deliverables:</strong> Product portfolio layout · Feature breakdown · User scenario mapping ·
+            Interface concept · Presentation-ready visuals
+          </div>
+          <div class="project-tags">
+            <span class="project-tag-chip">Patient UX</span>
+            <span class="project-tag-chip">Healthcare Product</span>
+            <span class="project-tag-chip">Terminal UI</span>
+            <span class="project-tag-chip">Service Design</span>
+          </div>
+          <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
+            View Case Study
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 15 Restaurant Inventory Management -->
+      <div class="project-card featured" data-tags="saas dashboard ai" style="display: flex; flex-direction: column;">
+        <div class="carousel-container" id="carouselContainer-15">
+          <div class="project-badges"><span class="project-badge">SaaS</span></div>
+          <div class="carousel-wrapper" id="carouselWrapper-15">
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Restaurant Inventory Management<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Concept
+                  Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Restaurant Inventory Management<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">User
+                  Flow Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#3a3354;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Restaurant Inventory Management<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Interface
+                  Preview</span></div>
+            </div>
+          </div>
+          <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('15')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="carousel-nav carousel-nav-next" onclick="carouselNext('15')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <div class="carousel-dots" id="carouselDots-15"></div>
+        </div>
+        <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
+          <div class="project-type">Restaurant SaaS · Inventory · AI Analytics</div>
+          <div class="project-title">Restaurant Inventory Management</div>
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed a restaurant inventory management web app that helps restaurants manage
+            inventory, orders, POS operations, worker KPIs, recipe building, allergen management, and AI-powered
+            business analysis.<br><br>
+            <strong>Key Features:</strong> Inventory management · Order tracking · Worker KPI dashboard · POS management
+            · AI business analysis · Recipe builder · Allergen management<br><br>
+            <strong>Role:</strong> Planned the SaaS structure, dashboard modules, restaurant workflows, and AI analysis
+            experience to support day-to-day restaurant operations.<br><br>
+            <strong>Deliverables:</strong> Information architecture · Dashboard wireframes · Module-based UX flow ·
+            High-fidelity web UI · SaaS feature documentation
+          </div>
+          <div class="project-tags">
+            <span class="project-tag-chip">Inventory UX</span>
+            <span class="project-tag-chip">Restaurant SaaS</span>
+            <span class="project-tag-chip">AI Analytics</span>
+            <span class="project-tag-chip">Dashboard</span>
+          </div>
+          <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
+            View Case Study
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 16 Mechanic Chai -->
+      <div class="project-card featured" data-tags="mobile" style="display: flex; flex-direction: column;">
+        <div class="carousel-container" id="carouselContainer-16">
+          <div class="project-badges"><span class="project-badge">Mobile</span></div>
+          <div class="carousel-wrapper" id="carouselWrapper-16">
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Mechanic Chai<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Concept
+                  Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Mechanic Chai<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">User
+                  Flow Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#3a3354;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                Mechanic Chai<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Interface
+                  Preview</span></div>
+            </div>
+          </div>
+          <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('16')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="carousel-nav carousel-nav-next" onclick="carouselNext('16')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <div class="carousel-dots" id="carouselDots-16"></div>
+        </div>
+        <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
+          <div class="project-type">Mobile · Roadside Service Platform</div>
+          <div class="project-title">Mechanic Chai</div>
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed a platform that connects stranded bikers, CNG drivers, truck drivers,
+            and other vehicle users with nearby mechanics for on-the-spot repair support.<br><br>
+            <strong>Key Features:</strong> Nearby mechanic discovery · Emergency repair request · User and mechanic
+            profiles · Location-based matching · Simple service booking flow<br><br>
+            <strong>Role:</strong> Designed the service experience, emergency flow, user journey, and accessible mobile
+            UI for users who need fast roadside support.<br><br>
+            <strong>Deliverables:</strong> Product concept · User flow · Service request journey · Wireframes ·
+            High-fidelity mobile UI
+          </div>
+          <div class="project-tags">
+            <span class="project-tag-chip">Service UX</span>
+            <span class="project-tag-chip">Location-based</span>
+            <span class="project-tag-chip">Roadside Help</span>
+            <span class="project-tag-chip">Mobile Design</span>
+          </div>
+          <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
+            View Case Study
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 17 MediConnect -->
+      <div class="project-card featured" data-tags="mobile dashboard" style="display: flex; flex-direction: column;">
+        <div class="carousel-container" id="carouselContainer-17">
+          <div class="project-badges"><span class="project-badge">Healthcare</span></div>
+          <div class="carousel-wrapper" id="carouselWrapper-17">
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                MediConnect<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Concept
+                  Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                MediConnect<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">User
+                  Flow Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#3a3354;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                MediConnect<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Interface
+                  Preview</span></div>
+            </div>
+          </div>
+          <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('17')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="carousel-nav carousel-nav-next" onclick="carouselNext('17')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <div class="carousel-dots" id="carouselDots-17"></div>
+        </div>
+        <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
+          <div class="project-type">Healthcare · Integrated Service Platform</div>
+          <div class="project-title">MediConnect</div>
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed and developed an integrated healthcare service platform that brings
+            together blood donation, organ donation, emergency services, pharmaceuticals, hospital seat booking, and
+            online doctor appointments.<br><br>
+            <strong>Key Features:</strong> Blood donation · Organ donation · Emergency services · Pharmacy support ·
+            Hospital seat booking · Online doctor appointment<br><br>
+            <strong>Role:</strong> Planned the service architecture, designed the user experience, and contributed to
+            development using HTML, PHP, and MySQL for an integrated medical platform.<br><br>
+            <strong>Deliverables:</strong> Service flow · Web UI design · Database-backed platform · Healthcare feature
+            modules · Functional project implementation
+          </div>
+          <div class="project-tags">
+            <span class="project-tag-chip">Healthcare UX</span>
+            <span class="project-tag-chip">Web App</span>
+            <span class="project-tag-chip">Multi-service</span>
+            <span class="project-tag-chip">PHP · MySQL</span>
+          </div>
+          <a href="https://github.com/tushartanzim" target="_blank" class="project-link">
+            View on GitHub
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- 18 E-Daak — Digital Mailbox -->
+      <div class="project-card featured" data-tags="saas" style="display: flex; flex-direction: column;">
+        <div class="carousel-container" id="carouselContainer-18">
+          <div class="project-badges"><span class="project-badge">Collaborative</span></div>
+          <div class="carousel-wrapper" id="carouselWrapper-18">
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#2d2d4e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                E-Daak — Digital Mailbox<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Concept
+                  Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#1a1a2e;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                E-Daak — Digital Mailbox<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">User
+                  Flow Preview</span></div>
+            </div>
+            <div class="carousel-slide">
+              <div
+                style="width:100%;height:100%;background:#3a3354;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Cormorant Garamond',serif;font-size:2rem;text-align:center;padding:32px;">
+                E-Daak — Digital Mailbox<br><span
+                  style="font-family:'DM Sans',sans-serif;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#c9a96e;margin-top:10px;display:block;">Interface
+                  Preview</span></div>
+            </div>
+          </div>
+          <button class="carousel-nav carousel-nav-prev" onclick="carouselPrev('18')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <button class="carousel-nav carousel-nav-next" onclick="carouselNext('18')">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+          <div class="carousel-dots" id="carouselDots-18"></div>
+        </div>
+        <div class="project-info" style="flex: 1; display: flex; flex-direction: column;">
+          <div class="project-type">Collaborative · Digital Platform</div>
+          <div class="project-title">E-Daak — Digital Mailbox</div>
+          <div class="project-desc" style="flex: 1;">
+            <strong>Overview:</strong> Designed a digital mailbox platform for secure online communication and document
+            delivery, helping users receive, manage, and organize important digital messages in one place.<br><br>
+            <strong>Key Features:</strong> Digital mailbox · Secure document delivery · Message organization · User
+            account management · Collaborative communication flow<br><br>
+            <strong>Role:</strong> Designed the product structure, communication flow, mailbox experience, and clean web
+            interface for secure digital document exchange.<br><br>
+            <strong>Deliverables:</strong> Product concept · User flows · Wireframes · Web app UI · Communication
+            journey mapping
+          </div>
+          <div class="project-tags">
+            <span class="project-tag-chip">Digital Mailbox</span>
+            <span class="project-tag-chip">Document Delivery</span>
+            <span class="project-tag-chip">Collaboration</span>
+            <span class="project-tag-chip">Web App</span>
+          </div>
+          <a href="https://www.behance.net/tanzimulhasan99" target="_blank" class="project-link">
+            View Case Study
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </a>
+        </div>
+      </div>
 
     </div>
   </section>
@@ -864,12 +2370,12 @@
     function updateCarousel(id) {
       const carouselState = carousels[id];
       const carouselWrapper = document.getElementById(`carouselWrapper-${id}`);
-      if(carouselWrapper) {
+      if (carouselWrapper) {
         carouselWrapper.style.transform = `translateX(-${carouselState.currentSlide * 100}%)`;
       }
-      
+
       const dotsContainer = document.getElementById(`carouselDots-${id}`);
-      if(dotsContainer && carouselState.totalSlides > 1) {
+      if (dotsContainer && carouselState.totalSlides > 1) {
         dotsContainer.querySelectorAll('.dot').forEach((dot, i) => {
           dot.classList.toggle('active', i === carouselState.currentSlide);
         });
@@ -877,19 +2383,19 @@
     }
 
     function carouselNext(id) {
-      if(!carousels[id] || carousels[id].totalSlides <= 1) return;
+      if (!carousels[id] || carousels[id].totalSlides <= 1) return;
       carousels[id].currentSlide = (carousels[id].currentSlide + 1) % carousels[id].totalSlides;
       updateCarousel(id);
     }
 
     function carouselPrev(id) {
-      if(!carousels[id] || carousels[id].totalSlides <= 1) return;
+      if (!carousels[id] || carousels[id].totalSlides <= 1) return;
       carousels[id].currentSlide = (carousels[id].currentSlide - 1 + carousels[id].totalSlides) % carousels[id].totalSlides;
       updateCarousel(id);
     }
 
     function goToSlide(id, index) {
-      if(!carousels[id] || carousels[id].totalSlides <= 1) return;
+      if (!carousels[id] || carousels[id].totalSlides <= 1) return;
       carousels[id].currentSlide = index;
       updateCarousel(id);
     }
@@ -899,11 +2405,11 @@
       const id = container.id.replace('carouselContainer-', '');
       initCarousel(id);
     });
-  
+
     // ── Theme toggle button ───────────────────────────────────
     var themeBtn = document.getElementById('themeToggleBtn');
     if (themeBtn) {
-      themeBtn.addEventListener('click', function() {
+      themeBtn.addEventListener('click', function () {
         var cur = document.documentElement.getAttribute('data-theme');
         var nxt = cur === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', nxt);
@@ -913,4 +2419,5 @@
 
   </script>
 </body>
+
 </html>
